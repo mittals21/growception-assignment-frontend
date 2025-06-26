@@ -5,18 +5,20 @@ import { toast } from "sonner"
 export default function MemberTasks() {
   const [tasks, setTasks] = useState([])
   const [updating, setUpdating] = useState(null)
+  const [filter, setFilter] = useState("all")
 
   useEffect(() => {
     fetchTasks()
-  }, [])
+  }, [filter])
 
   const fetchTasks = async () => {
     try {
       const res = await api.get("/tasks")
-      if (res.status !== 200) {
-        return toast.error("Error fetching tasks")
+      let filtered = res.data
+      if (filter !== "all") {
+        filtered = filtered.filter((t) => t.status === filter)
       }
-      setTasks(res.data)
+      setTasks(filtered)
     } catch (err) {
       console.error("Error fetching tasks", err)
     }
@@ -44,6 +46,18 @@ export default function MemberTasks() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">My Tasks</h2>
+      <div className="mb-4 flex justify-end">
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="all">All</option>
+          <option value="todo">Todo</option>
+          <option value="in progress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
       {tasks.length === 0 ? (
         <p className="text-gray-500">No tasks assigned to you yet.</p>
       ) : (
