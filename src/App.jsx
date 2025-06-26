@@ -9,6 +9,7 @@ import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import AdminTasks from "./pages/AdminTasks"
 import MemberTasks from "./pages/MemberTasks"
+import Navbar from "./components/Navbar"
 
 function App() {
   const token = localStorage.getItem("token")
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <Router>
+      {token && role && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
