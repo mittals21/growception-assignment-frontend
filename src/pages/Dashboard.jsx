@@ -52,12 +52,33 @@ export default function Dashboard() {
           </div>
         )}
 
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
+        <div className="flex justify-center items-center gap-3">
+          <div>
+            {role === "admin" && (
+              <a
+                href="/admin/tasks"
+                className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Manage Tasks
+              </a>
+            )}
+            {role === "member" && (
+              <a
+                href="/member/tasks"
+                className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                View My Tasks
+              </a>
+            )}
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   )
