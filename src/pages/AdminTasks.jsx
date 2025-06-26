@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "../api/axios"
+import { toast } from "sonner"
 
 export default function AdminTasks() {
   const [tasks, setTasks] = useState([])
@@ -21,12 +22,17 @@ export default function AdminTasks() {
 
   const fetchTasks = async () => {
     const res = await api.get("/tasks")
+    if (res.status !== 200) {
+      return toast.error("Error fetching tasks")
+    }
     setTasks(res.data)
   }
 
   const fetchUsers = async () => {
     const res = await api.get("/auth/users")
-
+    if (res.status !== 200) {
+      return toast.error("Error fetching tasks")
+    }
     setUsers(res?.data?.users?.filter((u) => u.role === "member"))
   }
 
@@ -40,17 +46,27 @@ export default function AdminTasks() {
 
     try {
       if (editMode && editingTaskId) {
-        await api.put(`/tasks/${editingTaskId}`, form)
+        const res = await api.put(`/tasks/${editingTaskId}`, form)
+
+        if (res.status !== 200) {
+          return toast.error("Error Updating Task")
+        }
       } else {
-        await api.post("/tasks", form)
+        const res = await api.post("/tasks", form)
+
+        if (res.status !== 201) {
+          return toast.error("Error creating Task")
+        }
       }
+
+      toast.success("Toast updated successfully")
       setForm({ title: "", description: "", assignedTo: "", dueDate: "" })
       setEditMode(false)
       setEditingTaskId(null)
       fetchTasks()
     } catch (err) {
       console.log(err, "error saving task")
-      alert("Failed to save task")
+      toast.err("Failed to save task")
     }
 
     setLoading(false)
@@ -58,7 +74,11 @@ export default function AdminTasks() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this task?")) return
-    await api.delete(`/tasks/${id}`)
+    const res = await api.delete(`/tasks/${id}`)
+    if (res.status !== 200) {
+      return toast.error("Error deleting tasks")
+    }
+    toast.success("Task deleted successfully")
     fetchTasks()
   }
 

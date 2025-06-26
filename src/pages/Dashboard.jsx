@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("role")
+    toast.success("Logout successful")
     navigate("/login")
   }
 

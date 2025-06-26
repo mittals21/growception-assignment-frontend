@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { toast } from "sonner"
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -22,11 +23,11 @@ export default function Register() {
     try {
       const res = await api.post("/auth/register", form)
       if (res.status !== 201) {
-        alert("Error registering user")
-        return
+        return toast.error("Error registering user")
       }
       localStorage.setItem("token", res.data.token)
       localStorage.setItem("role", res.data.role)
+      toast.success("Registration successful")
       navigate("/dashboard")
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed")

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "../api/axios"
+import { toast } from "sonner"
 
 export default function MemberTasks() {
   const [tasks, setTasks] = useState([])
@@ -12,6 +13,9 @@ export default function MemberTasks() {
   const fetchTasks = async () => {
     try {
       const res = await api.get("/tasks")
+      if (res.status !== 200) {
+        return toast.error("Error fetching tasks")
+      }
       setTasks(res.data)
     } catch (err) {
       console.error("Error fetching tasks", err)
@@ -21,12 +25,15 @@ export default function MemberTasks() {
   const handleStatusChange = async (taskId, newStatus) => {
     setUpdating(taskId)
     try {
-      await api.put(`/tasks/${taskId}`, { status: newStatus })
+      const res = await api.put(`/tasks/${taskId}`, { status: newStatus })
+      if (res.status !== 200) {
+        return toast.error("Error changing task status")
+      }
+      toast.success(`Status changed to ${newStatus}`)
       fetchTasks()
     } catch (err) {
       console.log(err, "error updating task status")
-
-      alert("Could not update task status")
+      toast.error("Could not update task status")
     } finally {
       setUpdating(null)
     }

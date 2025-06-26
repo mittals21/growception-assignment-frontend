@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { toast } from "sonner"
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" })
@@ -18,12 +19,12 @@ export default function Login() {
       const res = await api.post("/auth/login", form)
 
       if (res.status !== 200) {
-        alert("Error logging in")
-        return
+        return toast.error("Error logging in")
       }
 
       localStorage.setItem("token", res.data.token)
       localStorage.setItem("role", res.data.role)
+      toast.success("Logged in successfully")
       navigate("/dashboard")
     } catch (err) {
       setError(err.response?.data?.message || "Login failed")
